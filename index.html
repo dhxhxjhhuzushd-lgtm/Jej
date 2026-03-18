@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TokoKita - Belanja Online Mudah & Aman</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f8f9fa;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 1rem 5%;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            color: white;
+            font-size: 1.8rem;
+            font-weight: bold;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo i {
+            font-size: 2rem;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-menu a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+
+        .nav-menu a:hover {
+            transform: translateY(-2px);
+            opacity: 0.9;
+        }
+
+        .cart-icon {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: #ff4757;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 6px;
+            font-size: 0.8rem;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 4rem 5%;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Products Section */
+        .products-section {
+            max-width: 1400px;
+            margin: 3rem auto;
+            padding: 0 5%;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-title h2 {
+            font-size: 2rem;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .section-title p {
+            color: #666;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            transition: all 0.5s ease;
+        }
+
+        .product-card:hover .product-image {
+            transform: scale(1.05);
+        }
+
+        .product-info {
+            padding: 1.5rem;
+        }
+
+        .product-category {
+            color: #667eea;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-description {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .product-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .product-price {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .add-to-cart {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .add-to-cart:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #999;
+            transition: all 0.3s ease;
+        }
+
+        .close-modal:hover {
+            color: #333;
+        }
+
+        .modal-product-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+        }
+
+        .modal-product-name {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-product-price {
+            font-size: 1.3rem;
+            color: #667eea;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .modal-product-description {
+            color: #666;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .quantity-selector {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .quantity-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .quantity-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .quantity-input {
+            width: 60px;
+            text-align: center;
+            font-size: 1.1rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 0.3rem;
+        }
+
+        .buy-now {
+            width: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .buy-now:hover {
+            transform: scale(1.02);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Payment Modal */
+        .payment-modal .modal-content {
+            text-align: center;
+        }
+
+        .qris-image {
+            width: 100%;
+            max-width: 300px;
+            margin: 2rem auto;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+
+        .payment-details {
+            margin: 1rem 0;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .payment-details p {
+            margin: 0.5rem 0;
+            color: #333;
+        }
+
+        .payment-instructions {
+            text-align: left;
+            background: #f0f8ff;
+            padding: 1rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+        }
+
+        .payment-instructions h4 {
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .payment-instructions ol {
+            padding-left: 1.5rem;
+            color: #666;
+        }
+
+        .payment-instructions li {
+            margin: 0.5rem 0;
+        }
+
+        .confirm-payment {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .confirm-payment:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(40, 167, 69, 0.4);
+        }
+
+        /* Footer */
+        .footer {
+            background: #333;
+            color: white;
+            padding: 3rem 5% 1rem;
+            margin-top: 4rem;
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 1rem;
+            color: #fff;
+        }
+
+        .footer-section p {
+            color: #999;
+            line-height: 1.6;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-links a {
+            color: white;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .social-links a:hover {
+            color: #667eea;
+            transform: translateY(-3px);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid #444;
+            color: #999;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+            }
+            
+            .products-grid {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#" class="logo">
+                <i>🛍️</i>
+                TokoKita
+            </a>
+            <div class="nav-menu">
+                <a href="#">Beranda</a>
+                <a href="#produk">Produk</a>
+                <a href="#tentang">Tentang</a>
+                <a href="#kontak">Kontak</a>
+                <div class="cart-icon" onclick="viewCart()">
+                    <i>🛒</i>
+                    <span class="cart-count" id="cartCount">0</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>Selamat Datang di TokoKita</h1>
+        <p>Temukan berbagai produk berkualitas dengan harga terbaik. Belanja mudah, aman, dan nyaman!</p>
+    </section>
+
+    <!-- Products Section -->
+    <section class="products-section" id="produk">
+        <div class="section-title">
+            <h2>Produk Unggulan Kami</h2>
+            <p>Pilih produk favorit Anda dari koleksi terbaik kami</p>
+        </div>
+        <div class="products-grid" id="productsGrid">
+            <!-- Products will be loaded here via JavaScript -->
+        </div>
+    </section>
+
+    <!-- Product Detail Modal -->
+    <div class="modal" id="productModal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('productModal')">&times;</span>
+            <img src="" alt="Product" class="modal-product-image" id="modalProductImage">
+            <h3 class="modal-product-name" id="modalProductName"></h3>
+            <p class="modal-product-price" id="modalProductPrice"></p>
+            <p class="modal-product-description" id="modalProductDescription"></p>
+            
+            <div class="quantity-selector">
+                <button class="quantity-btn" onclick="changeQuantity(-1)">-</button>
+                <input type="number" class="quantity-input" id="quantity" value="1" min="1" readonly>
+                <button class="quantity-btn" onclick="changeQuantity(1)">+</button>
+            </div>
+            
+            <button class="buy-now" onclick="showPaymentModal()">Beli Sekarang</button>
+        </div>
+    </div>
+
+    <!-- Payment Modal -->
+    <div class="modal payment-modal" id="paymentModal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('paymentModal')">&times;</span>
+            <h2>Pembayaran via QRIS</h2>
+            <img src="https://drive.google.com/uc?export=view&id=1YpVeqkkCgcSujttNuwAEJzcS6il1Mcjj" alt="QRIS" class="qris-image">
+            
+            <div class="payment-details">
+                <p><strong>Produk:</strong> <span id="paymentProductName"></span></p>
+                <p><strong>Jumlah:</strong> <span id="paymentQuantity"></span></p>
+                <p><strong>Total Harga:</strong> Rp <span id="paymentTotal"></span></p>
+            </div>
+            
+            <div class="payment-instructions">
+                <h4>Cara Pembayaran:</h4>
+                <ol>
+                    <li>Buka aplikasi mobile banking atau e-wallet yang mendukung QRIS</li>
+                    <li>Pilih menu scan QRIS atau bayar via QRIS</li>
+                    <li>Scan kode QRIS di atas</li>
+                    <li>Periksa detail pembayaran dan konfirmasi</li>
+                    <li>Simpan bukti pembayaran</li>
+                </ol>
+            </div>
+            
+            <button class="confirm-payment" onclick="confirmPayment()">Konfirmasi Pembayaran</button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer" id="kontak">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>TokoKita</h3>
+                <p>Platform belanja online terpercaya dengan berbagai produk berkualitas untuk memenuhi kebutuhan Anda.</p>
+                <div class="social-links">
+                    <a href="#">📘</a>
+                    <a href="#">📷</a>
+                    <a href="#">🐦</a>
+                    <a href="#">📧</a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h3>Kontak</h3>
+                <p>📍 Jl. Contoh No. 123, Jakarta</p>
+                <p>📞 +62 812 3456 7890</p>
+                <p>📧 info@tokokita.com</p>
+            </div>
+            <div class="footer-section">
+                <h3>Jam Operasional</h3>
+                <p>Senin - Jumat: 08:00 - 20:00</p>
+                <p>Sabtu: 09:00 - 17:00</p>
+                <p>Minggu: Tutup</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 TokoKita. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Sample product data
+        const products = [
+            {
+                id: 1,
+                name: "Kemeja Pria Premium",
+                category: "Fashion Pria",
+                price: 250000,
+                description: "Kemeja pria bahan katun premium, nyaman dipakai sehari-hari. Tersedia berbagai ukuran S, M, L, XL.",
+                image: "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=500",
+                stock: 50
+            },
+            {
+                id: 2,
+                name: "Tas Ransel Wanita",
+                category: "Fashion Wanita",
+                price: 350000,
+                description: "Tas ransel wanita stylish dengan bahan kulit sintetis berkualitas. Cocok untuk kuliah atau kerja.",
+                image: "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=500",
+                stock: 30
+            },
+            {
+                id: 3,
+                name: "Sepatu Olahraga",
+                category: "Olahraga",
+                price: 450000,
+                description: "Sepatu olahraga nyaman untuk lari dan gym. Desain modern dan ringan.",
+                image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500",
+                stock: 40
+            },
+            {
+                id: 4,
+                name: "Jam Tangan Analog",
+                category: "Aksesoris",
+                price: 550000,
+                description: "Jam tangan analog klasik dengan desain elegan. Cocok untuk berbagai acara.",
+                image: "https://images.unsplash.com/photo-1524592094714-0f0654e20314?w=500",
+                stock: 25
+            },
+            {
+                id: 5,
+                name: "Smartwatch Series 5",
+                category: "Elektronik",
+                price: 1500000,
+                description: "Smartwatch dengan fitur lengkap: monitor detak jantung, GPS, notifikasi, dan tahan air.",
+                image: "https://images.unsplash.com/photo-1579586337278-3befd40fd17a?w=500",
+                stock: 15
+            },
+            {
+                id: 6,
+                name: "Headphone Wireless",
+                category: "Elektronik",
+                price: 750000,
+                description: "Headphone wireless dengan noise cancellation, baterai tahan lama 20 jam.",
+                image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500",
+                stock: 35
+            },
+            {
+                id: 7,
+                name: "Sweater Hoodie",
+                category: "Fashion Pria",
+                price: 200000,
+                description: "Hoodie casual dengan bahan fleece hangat dan nyaman. Tersedia berbagai warna.",
+                image: "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=500",
+                stock: 45
+            },
+            {
+                id: 8,
+                name: "Kacamata Hitam",
+                category: "Aksesoris",
+                price: 150000,
+                description: "Kacamata hitam时尚 dengan perlindungan UV, desain trendy.",
+                image: "https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=500",
+                stock: 60
+            }
+        ];
+
+        let cart = [];
+        let currentProduct = null;
+        let currentQuantity = 1;
+
+        // Load products
+        function loadProducts() {
+            const productsGrid = document.getElementById('productsGrid');
+            productsGrid.innerHTML = '';
+
+            products.forEach(product => {
+                const productCard = document.createElement('div');
+                productCard.className = 'product-card';
+                productCard.onclick = () => showProductDetail(product.id);
+                
+                productCard.innerHTML = `
+                    <img src="${product.image}" alt="${product.name}" class="product-image">
+                    <div class="product-info">
+                        <div class="product-category">${produc
